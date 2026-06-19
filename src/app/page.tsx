@@ -5,6 +5,9 @@ import {
   ArrowRight, Leaf, Calculator, Activity, Brain,
   Target, BarChart3, Users, TrendingDown,
 } from "lucide-react";
+import { useSession } from "@/contexts/SessionContext";
+import { mockLeaderboard } from "@/lib/mockData";
+
 
 const features = [
   { icon: Calculator, title: "Carbon Calculator",       desc: "Measure your footprint across transport, food, energy and more in 5 quick steps.", color: "text-green-400",  bg: "bg-green-500/10 border-green-500/20"   },
@@ -28,6 +31,26 @@ const stats = [
 ];
 
 export default function LandingPage() {
+  const { profile } = useSession();
+  const { displayName, ecoPoints, carbonScore, totalSaved, level, levelIcon } = profile;
+
+  // Calculate dynamic rank for user mockup display
+  const userEntry = {
+    name: displayName || "You",
+    avatar: displayName ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "ME",
+    score: carbonScore,
+    saved: totalSaved,
+    points: ecoPoints,
+    isMe: true
+  };
+  const leaderboardEntries = [
+    ...mockLeaderboard.filter(u => u.rank !== 4).map(u => ({ ...u, isMe: false })),
+    userEntry
+  ];
+  leaderboardEntries.sort((a, b) => b.points - a.points);
+  const myRank = leaderboardEntries.findIndex(u => u.isMe) + 1;
+  const totalCompetitors = leaderboardEntries.length;
+  const rankPercentile = Math.max(1, Math.round((myRank / totalCompetitors) * 100));
   return (
     <div className="min-h-screen app-bg">
 
@@ -72,13 +95,16 @@ export default function LandingPage() {
             </div>
 
             {/* Social proof stats with top border/divider */}
-            <div className="grid grid-cols-3 gap-6 w-full max-w-md pt-8 border-t border-white/[0.06]">
-              {stats.map(({ value, label }) => (
-                <div key={label} className="flex flex-col">
-                  <span className="text-white font-black text-xl leading-none tracking-tight">{value}</span>
-                  <span className="text-slate-500 text-[0.6875rem] font-bold uppercase tracking-wider mt-2 leading-none">{label}</span>
-                </div>
-              ))}
+            <div className="w-full pt-8 border-t border-white/[0.06]">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Global Community Impact</div>
+              <div className="grid grid-cols-3 gap-6 max-w-md">
+                {stats.map(({ value, label }) => (
+                  <div key={label} className="flex flex-col">
+                    <span className="text-white font-black text-xl leading-none tracking-tight">{value}</span>
+                    <span className="text-slate-500 text-[0.6875rem] font-bold uppercase tracking-wider mt-2 leading-none">{label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -89,17 +115,17 @@ export default function LandingPage() {
               style={{ borderColor: "rgba(34,197,94,0.15)" }}
             >
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-green-400" />
+                <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                  {levelIcon}
                 </div>
                 <div>
                   <div className="text-white font-bold text-sm">Your Carbon Score</div>
                   <div className="text-slate-500 text-xs">Updated today</div>
                 </div>
-                <div className="ml-auto text-green-400 font-black text-2xl tracking-tight">78/100</div>
+                <div className="ml-auto text-green-400 font-black text-2xl tracking-tight">{carbonScore}/100</div>
               </div>
               <div className="progress-bar-track">
-                <div className="progress-bar-fill" style={{ width: "78%" }} />
+                <div className="progress-bar-fill" style={{ width: `${carbonScore}%` }} />
               </div>
               <div className="flex justify-between mt-2">
                 <span className="text-slate-600 text-xs font-bold">0</span>
@@ -109,8 +135,8 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-2 gap-4">
               {[
-                { label: "CO₂ Saved", value: "142 kg", color: "text-emerald-400" },
-                { label: "Eco Points", value: "2,840",  color: "text-green-400"  },
+                { label: "CO₂ Saved", value: `${totalSaved} kg`, color: "text-emerald-400" },
+                { label: "Eco Points", value: ecoPoints.toLocaleString(), color: "text-green-400" },
               ].map(({ label, value, color }) => (
                 <div
                   key={label}
@@ -126,11 +152,11 @@ export default function LandingPage() {
             <div className="card card-lg flex flex-row items-center gap-4" style={{ borderColor: "rgba(234,179,8,0.12)" }}>
               <span className="text-3xl">🏆</span>
               <div>
-                <div className="text-white font-bold text-sm">Eco Warrior</div>
-                <div className="text-slate-500 text-xs">Rank #12 on leaderboard</div>
+                <div className="text-white font-bold text-sm">{level}</div>
+                <div className="text-slate-500 text-xs">Rank #{myRank} on leaderboard</div>
               </div>
               <div className="ml-auto">
-                <span className="badge badge-yellow text-[0.7rem]">Top 5%</span>
+                <span className="badge badge-yellow text-[0.7rem]">Top {rankPercentile}%</span>
               </div>
             </div>
           </div>

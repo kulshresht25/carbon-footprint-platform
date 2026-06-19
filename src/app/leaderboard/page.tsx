@@ -5,19 +5,12 @@ import { Trophy, Leaf, TrendingDown } from "lucide-react";
 import { mockLeaderboard } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
-import { useState } from "react";
 import { useSession } from "@/contexts/SessionContext";
 
 const rankColors: Record<number, string> = {
   1: "from-yellow-400 to-amber-500",
   2: "from-slate-300 to-slate-400",
   3: "from-amber-600 to-amber-700",
-};
-
-const rankMedals: Record<number, string> = {
-  1: "gold",
-  2: "silver",
-  3: "bronze",
 };
 
 export default function LeaderboardPage() {

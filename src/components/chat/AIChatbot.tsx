@@ -66,6 +66,7 @@ export function AIChatbot() {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chatRef = useRef<any>(null);
 
   useEffect(() => {
@@ -83,6 +84,7 @@ export function AIChatbot() {
     if (!text.trim()) return;
 
     const userMsg = createMessage("user", text);
+    // eslint-disable-next-line react-hooks/purity
     const botMsgId = Date.now() + 1;
     const botMsgPlaceholder: Message = {
       id: botMsgId,

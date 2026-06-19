@@ -154,6 +154,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       saveSession(updatedProfile);
     }
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfile(updatedProfile);
     setLoading(false);
   }, []);

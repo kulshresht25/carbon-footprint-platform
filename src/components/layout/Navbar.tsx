@@ -28,7 +28,6 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { profile } = useSession();
-  const isLanding = pathname === "/";
 
   return (
     <nav

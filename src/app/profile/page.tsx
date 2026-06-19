@@ -16,7 +16,7 @@ export default function ProfilePage() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(profile.displayName);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
-  const [toastTimeoutId, setToastTimeoutId] = useState<any>(null);
+  const [toastTimeoutId, setToastTimeoutId] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const showToast = (message: string) => {
     if (toastTimeoutId) {

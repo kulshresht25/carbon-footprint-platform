@@ -52,7 +52,10 @@ export default function DashboardPage() {
   const { profile } = useSession();
   const [habits, setHabits] = useState(mockHabits);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
   const { displayName, ecoPoints, carbonScore, level, levelIcon, streak, totalSaved } = profile;
 
   const toggleHabit = (id: number) =>

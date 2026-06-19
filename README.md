@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EcoTrack 🌿
 
-## Getting Started
+EcoTrack is a premium, high-fidelity carbon footprint tracking and gamified sustainability platform built on Next.js 16 (React 19), Tailwind CSS v4, and Firebase. It empowers individuals to calculate, analyze, and reduce their carbon footprint through daily habits, eco challenges, and an interactive AI Sustainability Coach.
 
-First, run the development server:
+🌐 **Live Deployment**: [ecotrack-kul25.web.app](https://ecotrack-kul25.web.app)
+
+---
+
+## ✨ Features
+
+- 📊 **Interactive Dashboard & Analytics**: Get immediate, visual insights into your carbon score, lifetime CO2 saved, and monthly emissions trends using rich, interactive Recharts visualizations.
+- 🧮 **Carbon Footprint Calculator**: A detailed, multi-step calculation system analyzing transportation, diet, home energy usage, waste production, and shopping habits to compute an accurate sustainability score.
+- 🤖 **Eco AI Coach Chatbot**: Powered by the Gemini API (`gemini-2.5-flash-lite`) via `firebase/ai`. Streams expert, context-aware answers to help you adopt sustainable lifestyles in real-time.
+- ⚡ **Daily Streak & Habit Tracker**: Automatically updates your daily activity streak upon visiting, encouraging consistent green habits.
+- 🏆 **Gamified Leaderboard**: Compete with a dynamic community where ranks shift dynamically based on points earned from completing habits and challenges.
+- 🏅 **Achievements & Challenges**: Unlock unique, visual badges and complete timed challenges (e.g., *Plastic-Free Week*, *Vegetarian Weekend*) to earn Eco Points.
+- 🖨️ **Printable PDF Reports**: Perfectly styled `@media print` layout that allows users to export a professional, clean, two-page carbon footprint report card.
+- 🔗 **Social Sharing**: Share profile highlights (Carbon Score, CO2 saved, points) directly using the Web Share API or copy them to the clipboard with custom toast notifications.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router, Static Export)
+- **Library**: React 19 (Hooks, Context API)
+- **Styling**: Tailwind CSS v4 (Custom dark mode / glassmorphic UI design tokens)
+- **Animations**: Framer Motion
+- **AI Integration**: Firebase AI SDK (`firebase/ai`) + Google Gemini API (`gemini-2.5-flash-lite`)
+- **Hosting**: Firebase Hosting
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone <your-repository-url>
+   cd carbon-footprint-platform
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure local environment variables**:
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   ```
+
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📦 Building & Deploying
+
+To compile the project and build the optimized static production export:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To deploy the static assets to Firebase Hosting:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx firebase-tools deploy --only hosting
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📄 License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.

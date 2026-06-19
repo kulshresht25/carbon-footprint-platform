@@ -38,12 +38,10 @@ export function Navbar() {
       style={{ height: "var(--navbar-h)" }}
     >
       <div
-        className="h-full flex items-center justify-between gap-6"
+        className="h-full flex items-center justify-between gap-4 px-4 sm:px-6"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          paddingLeft: "var(--space-6)",
-          paddingRight: "var(--space-6)",
         }}
       >
         {/* â”€â”€ Logo â”€â”€ */}

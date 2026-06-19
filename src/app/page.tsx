@@ -319,13 +319,6 @@ export default function LandingPage() {
           <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider text-center">
             © 2026 EcoTrack — Building a greener future 🌱
           </p>
-
-          {/* Links */}
-          <div className="flex gap-6 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            <a href="#" className="hover:text-slate-300 transition-colors duration-200">Privacy</a>
-            <a href="#" className="hover:text-slate-300 transition-colors duration-200">Terms</a>
-            <a href="#" className="hover:text-slate-300 transition-colors duration-200">About</a>
-          </div>
         </div>
       </footer>
     </div>

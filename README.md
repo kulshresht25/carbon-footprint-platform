@@ -138,6 +138,16 @@ npx firebase-tools deploy --only hosting
 
 ---
 
+## 🔒 Privacy Policy
+
+EcoTrack values your privacy. Here is how your data is handled:
+- **Local Storage**: All your session data, carbon calculation results, habits checklist progress, streak status, and level history are stored exclusively in your browser's local storage (`localStorage`).
+- **No PII Collection**: The application does not collect, transmit, or store any Personally Identifiable Information (PII) such as email addresses, phone numbers, full names, or physical locations on our servers.
+- **Zero Authentication Required**: No sign-up, registration, or account creation is necessary to use any of the features.
+- **AI Recommendation Engine**: When requesting recommendations from the AI Coach, your computed monthly emissions breakdown is transmitted to the Gemini API securely to construct personalized eco-tips. No personal data is attached.
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.

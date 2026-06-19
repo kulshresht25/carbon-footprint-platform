@@ -155,7 +155,28 @@ export default function AnalyticsPage() {
             </div>
             <h2 className="chart-card-title">12-Month Emissions & Savings Trend</h2>
           </div>
-          <div className="h-chart-xl">
+            {/* Screen reader fallback table */}
+            <table className="sr-only">
+              <caption>12-Month Carbon Emissions and Savings Trend</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Month</th>
+                  <th scope="col">Emissions (kg CO2)</th>
+                  <th scope="col">CO2 Saved (kg CO2)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockMonthlyData.map((m: any) => (
+                  <tr key={m.month}>
+                    <td>{m.month}</td>
+                    <td>{m.emissions}</td>
+                    <td>{m.savings}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          <div className="h-chart-xl" aria-hidden="true">
             {mounted && (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={mockMonthlyData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
@@ -201,7 +222,28 @@ export default function AnalyticsPage() {
             <div className="chart-card-header">
               <h2 className="chart-card-title">Weekly Comparison</h2>
             </div>
-            <div className="h-chart-md">
+              {/* Screen reader fallback table */}
+              <table className="sr-only">
+                <caption>Weekly Carbon Emissions Comparison</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Week</th>
+                    <th scope="col">This Month (kg CO2)</th>
+                    <th scope="col">Last Month (kg CO2)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weeklyComparisonData.map((w: any) => (
+                    <tr key={w.week}>
+                      <td>{w.week}</td>
+                      <td>{w.thisMonth}</td>
+                      <td>{w.lastMonth}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            <div className="h-chart-md" aria-hidden="true">
               {mounted && (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -227,7 +269,26 @@ export default function AnalyticsPage() {
             <div className="chart-card-header">
               <h2 className="chart-card-title">Emissions by Category</h2>
             </div>
-            <div className="h-chart-md">
+              {/* Screen reader fallback table */}
+              <table className="sr-only">
+                <caption>Carbon Emissions by Category</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">Emissions Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockCategoryData.map((c: any) => (
+                    <tr key={c.name}>
+                      <td>{c.name}</td>
+                      <td>{c.value}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            <div className="h-chart-md" aria-hidden="true">
               {mounted && (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

@@ -147,7 +147,28 @@ export default function DashboardPage() {
               </div>
               <h2 className="chart-card-title">Weekly Emissions</h2>
             </div>
-            <div className="h-chart-lg">
+              {/* Screen reader fallback table */}
+              <table className="sr-only">
+                <caption>Weekly Carbon Emissions and Targets</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Day</th>
+                    <th scope="col">Emissions (kg CO2)</th>
+                    <th scope="col">Target (kg CO2)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weeklyData.map((d: any) => (
+                    <tr key={d.day}>
+                      <td>{d.day}</td>
+                      <td>{d.emissions}</td>
+                      <td>{d.target}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            <div className="h-chart-lg" aria-hidden="true">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={weeklyData} margin={{ left: -10, right: 8, top: 4, bottom: 0 }}>
                   <defs>
@@ -184,7 +205,26 @@ export default function DashboardPage() {
               </div>
               <h2 className="chart-card-title">By Category</h2>
             </div>
-            <div className="h-chart-md">
+              {/* Screen reader fallback table */}
+              <table className="sr-only">
+                <caption>Carbon Emissions by Category</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">Emissions Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockCategoryData.map((c: any) => (
+                    <tr key={c.name}>
+                      <td>{c.name}</td>
+                      <td>{c.value}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            <div className="h-chart-md" aria-hidden="true">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -246,6 +286,9 @@ export default function DashboardPage() {
                     ? "border-green-500/20 bg-green-500/5 hover:bg-green-500/8"
                     : "border-white/[0.05] hover:border-slate-700/60 hover:bg-slate-900/15"
                 )}
+                role="checkbox"
+                aria-checked={completed ? "true" : "false"}
+                aria-label={`Toggle habit: ${label}. Worth ${points} points. ${completed ? "Completed" : "Not completed"}.`}
               >
                 <div
                   className={cn(

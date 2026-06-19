@@ -7,9 +7,44 @@ import {
   ShoppingBag, Trash2, CheckCircle2, ChevronRight, ChevronLeft,
   RefreshCw, CheckCheck, BarChart2, Brain,
 } from "lucide-react";
-import { calculateCarbonFootprint, type CalculatorData } from "@/lib/calculator";
+import { calculateCarbonFootprint, type CalculatorData, type CarbonResult } from "@/lib/calculator";
 import { cn, getScoreBg, getScoreLabel } from "@/lib/utils";
 import { useSession } from "@/contexts/SessionContext";
+import { getFallbackTips, type Recommendation } from "@/lib/fallbackTips";
+
+const getCategoryIcon = (category: string) => {
+  switch (category.toLowerCase()) {
+    case "transport":
+      return Car;
+    case "energy":
+      return Zap;
+    case "food":
+      return Leaf;
+    case "shopping":
+      return ShoppingBag;
+    case "waste":
+      return Trash2;
+    default:
+      return Brain;
+  }
+};
+
+const getCategoryColor = (category: string) => {
+  switch (category.toLowerCase()) {
+    case "transport":
+      return "text-green-400 bg-green-500/10 border-green-500/20";
+    case "energy":
+      return "text-violet-400 bg-violet-500/10 border-violet-500/20";
+    case "food":
+      return "text-teal-400 bg-teal-500/10 border-teal-500/20";
+    case "shopping":
+      return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+    case "waste":
+      return "text-red-400 bg-red-500/10 border-red-500/20";
+    default:
+      return "text-violet-400 bg-violet-500/10 border-violet-500/20";
+  }
+};
 
 const STEPS = [
   { id: 1, title: "Transportation", icon: Car,        desc: "How do you get around?",     tip: "Transportation accounts for 27% of average household emissions. Sustainable options make the biggest impact." },
@@ -49,8 +84,12 @@ const SpeedometerGauge = ({ score }: { score: number }) => {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="relative w-56 h-32 flex flex-col items-center justify-end overflow-hidden select-none">
-      <svg className="w-56 h-56 -rotate-180 absolute -bottom-28" viewBox="0 0 150 150">
+    <div
+      className="relative w-56 h-32 flex flex-col items-center justify-end overflow-hidden select-none"
+      role="img"
+      aria-label={`Sustainability Score Gauge showing ${score} out of 100`}
+    >
+      <svg className="w-56 h-56 -rotate-180 absolute -bottom-28" viewBox="0 0 150 150" aria-hidden="true">
         <circle
           cx="75" cy="75" r={radius}
           stroke="rgba(255,255,255,0.04)" strokeWidth={strokeWidth}
@@ -75,8 +114,8 @@ const SpeedometerGauge = ({ score }: { score: number }) => {
         </defs>
       </svg>
       <div className="text-center z-10 mb-2">
-        <div className="text-6xl font-black text-white tracking-tighter leading-none">{score}</div>
-        <div className="text-label mt-2">Sustainability Score</div>
+        <div className="text-6xl font-black text-white tracking-tighter leading-none" aria-hidden="true">{score}</div>
+        <div className="text-label mt-2" aria-hidden="true">Sustainability Score</div>
       </div>
     </div>
   );
@@ -94,10 +133,53 @@ export default function CalculatorPage() {
   const [showResult, setShowResult] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loadingRecs, setLoadingRecs] = useState(false);
+  const [recsNotice, setRecsNotice] = useState<string | null>(null);
+
+  const fetchRecommendations = async (breakdown: CarbonResult) => {
+    setLoadingRecs(true);
+    setRecsNotice(null);
+    try {
+      const response = await fetch("/api/coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          transportEmissions: breakdown.transportEmissions,
+          foodEmissions: breakdown.foodEmissions,
+          energyEmissions: breakdown.energyEmissions,
+          shoppingEmissions: breakdown.shoppingEmissions,
+          wasteEmissions: breakdown.wasteEmissions,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          const fallback = getFallbackTips(breakdown);
+          setRecommendations(fallback.slice(0, 3));
+          setRecsNotice("Rate limit exceeded. Showing local recommendations.");
+        } else {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+      } else {
+        const validatedTips = await response.json();
+        setRecommendations(validatedTips);
+      }
+    } catch (err) {
+      console.error("Failed to fetch recommendations, using client fallback:", err);
+      const fallback = getFallbackTips(breakdown);
+      setRecommendations(fallback.slice(0, 3));
+      setRecsNotice("Connection issue. Showing local recommendations.");
+    } finally {
+      setLoadingRecs(false);
+    }
+  };
+
   const handleSubmit = () => {
     const r = calculateCarbonFootprint(data);
     setResult(r);
     setShowResult(true);
+    fetchRecommendations(r);
   };
 
   const reset = () => {
@@ -179,6 +261,7 @@ export default function CalculatorPage() {
                               ? "bg-slate-950 border-2 border-green-500 text-green-400 cursor-default"
                               : "bg-slate-950 border border-white/[0.06] text-slate-500 cursor-not-allowed"
                           )}
+                          aria-label={`Step ${s.id}: ${s.title}${isCompleted ? ", Completed" : isActive ? ", Active" : ""}`}
                         >
                           {isCompleted ? (
                             <CheckCircle2 className="w-4 h-4" />
@@ -191,6 +274,7 @@ export default function CalculatorPage() {
                             "text-[0.65rem] font-bold uppercase tracking-wider leading-tight text-center hidden sm:block",
                             isActive ? "text-green-400" : isCompleted ? "text-slate-400" : "text-slate-600"
                           )}
+                          aria-hidden="true"
                         >
                           {s.title}
                         </span>
@@ -227,7 +311,7 @@ export default function CalculatorPage() {
                   <div className="flex flex-col gap-8">
                     <div>
                       <div className="text-label mb-4">Primary transport mode</div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" role="radiogroup" aria-label="Transport option">
                         {TRANSPORT_OPTIONS.map(({ value, label, icon: Icon, co2, co2Class }) => (
                           <button
                             key={value}
@@ -238,6 +322,9 @@ export default function CalculatorPage() {
                                 ? "border-green-500/30 bg-green-500/6 shadow-inner"
                                 : "border-white/[0.05] hover:border-slate-700/60 hover:bg-slate-900/20"
                             )}
+                            role="radio"
+                            aria-checked={data.transport === value ? "true" : "false"}
+                            aria-label={`Transport mode: ${label}. Carbon impact: ${co2}.`}
                           >
                             <div className="flex items-center justify-between w-full">
                               <Icon className={cn("w-5 h-5", data.transport === value ? "text-green-400" : "text-slate-400")} />
@@ -311,6 +398,8 @@ export default function CalculatorPage() {
                               ? "border-green-500/25 bg-green-500/6"
                               : "border-white/[0.05] hover:border-slate-700/50"
                           )}
+                          role="checkbox"
+                          aria-checked={(data as unknown as Record<string, boolean | string>)[key] ? "true" : "false"}
                         >
                           <div className={cn("w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-all", (data as unknown as Record<string, boolean | string>)[key] ? "bg-green-500 border-green-500" : "border-slate-700")}>
                             {(data as unknown as Record<string, boolean | string>)[key] && <span className="text-white text-[10px] font-black">✓</span>}
@@ -327,7 +416,7 @@ export default function CalculatorPage() {
 
                 {/* ── Step 3: Food ── */}
                 {step === 2 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="radiogroup" aria-label="Dietary option">
                     {FOOD_OPTIONS.map(({ value, label, emoji, desc }) => (
                       <button
                         key={value}
@@ -338,6 +427,9 @@ export default function CalculatorPage() {
                             ? "border-green-500/25 bg-green-500/6"
                             : "border-white/[0.05] hover:border-slate-700/50 hover:bg-slate-900/15"
                         )}
+                        role="radio"
+                        aria-checked={data.foodHabits === value ? "true" : "false"}
+                        aria-label={`Diet: ${label}. ${desc}`}
                       >
                         <span className="text-3xl shrink-0">{emoji}</span>
                         <div className="flex-1">
@@ -352,7 +444,7 @@ export default function CalculatorPage() {
 
                 {/* ── Step 4: Shopping ── */}
                 {step === 3 && (
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4" role="radiogroup" aria-label="Shopping option">
                     {SHOPPING_OPTIONS.map(({ value, label, emoji, desc }) => (
                       <button
                         key={value}
@@ -363,6 +455,9 @@ export default function CalculatorPage() {
                             ? "border-green-500/25 bg-green-500/6"
                             : "border-white/[0.05] hover:border-slate-700/50 hover:bg-slate-900/15"
                         )}
+                        role="radio"
+                        aria-checked={data.shoppingHabits === value ? "true" : "false"}
+                        aria-label={`Shopping habits: ${label}. ${desc}`}
                       >
                         <span className="text-3xl shrink-0">{emoji}</span>
                         <div className="flex-1">
@@ -392,6 +487,8 @@ export default function CalculatorPage() {
                               ? "border-green-500/25 bg-green-500/6"
                               : "border-white/[0.05] hover:border-slate-700/50"
                           )}
+                          role="checkbox"
+                          aria-checked={(data as unknown as Record<string, boolean | string>)[key] ? "true" : "false"}
                         >
                           <div className={cn("w-5 h-5 rounded-md border flex items-center justify-center shrink-0", (data as unknown as Record<string, boolean | string>)[key] ? "bg-green-500 border-green-500" : "border-slate-700")}>
                             {(data as unknown as Record<string, boolean | string>)[key] && <span className="text-white text-[10px] font-black">✓</span>}
@@ -406,7 +503,7 @@ export default function CalculatorPage() {
 
                     <div>
                       <div className="text-label mb-4">Single-use plastic usage</div>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3" role="radiogroup" aria-label="Single-use plastic usage">
                         {(["low", "medium", "high"] as const).map((v) => (
                           <button
                             key={v}
@@ -417,6 +514,8 @@ export default function CalculatorPage() {
                                 ? "border-green-500/25 bg-green-500/8 text-green-400"
                                 : "border-white/[0.05] text-slate-400 hover:border-slate-700/50"
                             )}
+                            role="radio"
+                            aria-checked={data.plasticUsage === v ? "true" : "false"}
                           >
                             {v}
                           </button>
@@ -574,15 +673,82 @@ export default function CalculatorPage() {
                     </div>
                   </div>
 
-                  {/* AI Tip */}
-                  <div className="p-5 rounded-2xl border border-violet-500/15 bg-violet-500/5 flex gap-4 items-start">
-                    <Brain className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-white font-bold text-sm mb-1">AI Recommendation</div>
-                      <p className="text-slate-400 text-xs leading-relaxed">
-                        Based on your profile, switching to public transport 3x/week and adopting a mixed-to-vegetarian diet could reduce your footprint by up to 35%.
-                      </p>
+                  {/* AI Recommendations */}
+                  <div className="chart-card flex flex-col gap-6" aria-live="polite">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                          <Brain className="w-4 h-4 text-violet-400" />
+                        </div>
+                        <h3 className="chart-card-title">AI Sustainability Recommendations</h3>
+                      </div>
+                      {result && !loadingRecs && (
+                        <button
+                          onClick={() => fetchRecommendations(result)}
+                          className="p-1.5 rounded-lg border border-white/[0.06] hover:bg-white/[0.04] text-slate-400 hover:text-white transition-all outline-none"
+                          aria-label="Refresh AI Recommendations"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
+
+                    {recsNotice && (
+                      <div className="text-xs text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-2 rounded-xl flex items-center gap-2">
+                        <span>⚠️</span> {recsNotice}
+                      </div>
+                    )}
+
+                    {loadingRecs ? (
+                      <div className="flex flex-col gap-4 py-2">
+                        <div className="flex items-center justify-center gap-3 text-slate-400 text-sm">
+                          <RefreshCw className="w-5 h-5 animate-spin text-violet-400" />
+                          <span>Generating personalized eco-tips...</span>
+                        </div>
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="animate-pulse flex gap-4 p-4 rounded-xl border border-white/[0.03] bg-white/[0.01]">
+                            <div className="w-10 h-10 rounded-xl bg-white/[0.05]" />
+                            <div className="flex-1 flex flex-col gap-2">
+                              <div className="h-4 bg-white/[0.05] rounded w-1/4" />
+                              <div className="h-3 bg-white/[0.05] rounded w-3/4" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : recommendations.length > 0 ? (
+                      <div className="flex flex-col gap-4">
+                        {recommendations.map((rec, index) => {
+                          const IconComp = getCategoryIcon(rec.category);
+                          const colorClasses = getCategoryColor(rec.category);
+                          return (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="flex items-start gap-4 p-4 rounded-xl border border-white/[0.045] bg-white/[0.01] hover:bg-white/[0.02] transition-colors text-left"
+                            >
+                              <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border", colorClasses)}>
+                                <IconComp className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                  <span className="font-bold text-xs uppercase tracking-wider text-slate-400">{rec.category}</span>
+                                  {rec.estimatedSavingKg > 0 && (
+                                    <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400">
+                                      -{rec.estimatedSavingKg} kg CO₂/mo
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-white text-xs leading-relaxed mt-1.5">{rec.action}</p>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-slate-400 text-xs text-center py-4">No recommendations available.</p>
+                    )}
                   </div>
 
                   <button onClick={reset} className="btn-base btn-secondary w-full">

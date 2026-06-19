@@ -32,6 +32,18 @@ vi.mock("@/lib/calculator", async (importOriginal) => {
 });
 
 describe("CalculatorPage Component", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        { category: "Transport", action: "Carpool to work", estimatedSavingKg: 30 },
+        { category: "Energy", action: "Unplug chargers", estimatedSavingKg: 10 },
+        { category: "Food", action: "Eat vegetables", estimatedSavingKg: 20 },
+      ],
+    }));
+  });
+
   it("navigates through steps correctly, updates slider inputs, and displays results", async () => {
     const user = userEvent.setup();
     
@@ -52,7 +64,7 @@ describe("CalculatorPage Component", () => {
     expect(screen.getByText("120 km")).toBeInTheDocument();
 
     // Select Bicycle option
-    const bikeOption = screen.getByRole("button", { name: /Bicycle Zero/i });
+    const bikeOption = screen.getByRole("radio", { name: /Bicycle/i });
     await user.click(bikeOption);
 
     // Go to next step
@@ -71,20 +83,20 @@ describe("CalculatorPage Component", () => {
     expect(screen.getByText("450 kWh")).toBeInTheDocument();
 
     // Toggle solar panels checkbox
-    const solarBtn = screen.getByRole("button", { name: /Solar Panels/i });
+    const solarBtn = screen.getByRole("checkbox", { name: /Solar Panels/i });
     await user.click(solarBtn);
 
     await user.click(nextBtn);
 
     // --- STEP 3: Food ---
     expect(screen.getByText("Step 3 of 5")).toBeInTheDocument();
-    const veganOption = screen.getByRole("button", { name: /Vegan/i });
+    const veganOption = screen.getByRole("radio", { name: /Vegan/i });
     await user.click(veganOption);
     await user.click(nextBtn);
 
     // --- STEP 4: Shopping ---
     expect(screen.getByText("Step 4 of 5")).toBeInTheDocument();
-    const lowShopping = screen.getByRole("button", { name: /Minimal/i });
+    const lowShopping = screen.getByRole("radio", { name: /Minimal/i });
     await user.click(lowShopping);
     await user.click(nextBtn);
 
@@ -92,11 +104,11 @@ describe("CalculatorPage Component", () => {
     expect(screen.getByText("Step 5 of 5")).toBeInTheDocument();
     
     // Toggle composts
-    const compostsBtn = screen.getByRole("button", { name: /Composts Food/i });
+    const compostsBtn = screen.getByRole("checkbox", { name: /Composts Food/i });
     await user.click(compostsBtn);
 
     // Plastic usage low
-    const plasticLowBtn = screen.getByRole("button", { name: /low/i });
+    const plasticLowBtn = screen.getByRole("radio", { name: /low/i });
     await user.click(plasticLowBtn);
 
     // Back button should navigate to step 4

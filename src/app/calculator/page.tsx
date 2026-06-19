@@ -266,7 +266,7 @@ export default function CalculatorPage() {
                           onChange={(e) => setData((d) => ({ ...d, weeklyDistance: +e.target.value }))}
                           className="range-slider-custom"
                         />
-                        <div className="flex justify-between text-label mt-2">
+                        <div className="flex justify-between text-label mt-2" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                           <span>0 km</span>
                           <span>500 km</span>
                         </div>
@@ -290,7 +290,7 @@ export default function CalculatorPage() {
                           onChange={(e) => setData((d) => ({ ...d, monthlyElectricity: +e.target.value }))}
                           className="range-slider-custom"
                         />
-                        <div className="flex justify-between text-label mt-2">
+                        <div className="flex justify-between text-label mt-2" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                           <span>0 kWh</span>
                           <span>1,000 kWh</span>
                         </div>

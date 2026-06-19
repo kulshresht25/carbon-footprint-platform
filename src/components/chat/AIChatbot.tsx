@@ -7,12 +7,69 @@ import { mockChatResponses } from "@/lib/mockData";
 import app from "@/lib/firebase";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 
-// Initialize the Gemini Developer API backend service
-const ai = getAI(app, { backend: new GoogleAIBackend() });
-const model = getGenerativeModel(ai, {
-  model: "gemini-2.5-flash-lite",
-  systemInstruction: "You are Eco AI Coach, a friendly, supportive, and knowledgeable AI sustainability coach. You help users reduce their carbon footprint, adopt eco-friendly habits, and complete green challenges. Keep responses concise, practical, and positive. Use emojis to make formatting clear. Always speak from the perspective of an expert in climate action and green living."
-});
+// Safe lazy getter to prevent crashing if Firebase credentials are not set up or initialization fails
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let aiInstance: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let modelInstance: any = null;
+
+function getChatModel() {
+  if (modelInstance) return modelInstance;
+  try {
+    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    if (!apiKey || apiKey === "your_firebase_api_key_here") {
+      console.warn("Firebase API key is not configured. AIChatbot is running in fallback mock mode.");
+      return null;
+    }
+    aiInstance = getAI(app, { backend: new GoogleAIBackend() });
+    modelInstance = getGenerativeModel(aiInstance, {
+      model: "gemini-2.5-flash-lite",
+      systemInstruction: "You are Eco AI Coach, a friendly, supportive, and knowledgeable AI sustainability coach. You help users reduce their carbon footprint, adopt eco-friendly habits, and complete green challenges. Keep responses concise, practical, and positive. Use emojis to make formatting clear. Always speak from the perspective of an expert in climate action and green living."
+    });
+    return modelInstance;
+  } catch (e) {
+    console.error("Failed to initialize Gemini model:", e);
+    return null;
+  }
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  reason?: "minute" | "daily";
+}
+
+function checkRateLimit(): RateLimitResult {
+  try {
+    const now = Date.now();
+    const timestampsKey = "ecotrack_chat_timestamps";
+    const stored = localStorage.getItem(timestampsKey);
+    let timestamps: number[] = stored ? JSON.parse(stored) : [];
+
+    // Filter out messages older than 24 hours
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+    timestamps = timestamps.filter(t => t > oneDayAgo);
+
+    // Check last 60 seconds limit (e.g. max 5 messages)
+    const oneMinuteAgo = now - 60 * 1000;
+    const lastMinuteMessages = timestamps.filter(t => t > oneMinuteAgo);
+    if (lastMinuteMessages.length >= 5) {
+      return { allowed: false, reason: "minute" };
+    }
+
+    // Check 24 hours limit (e.g. max 50 messages)
+    if (timestamps.length >= 50) {
+      return { allowed: false, reason: "daily" };
+    }
+
+    // Record this message
+    timestamps.push(now);
+    localStorage.setItem(timestampsKey, JSON.stringify(timestamps));
+    return { allowed: true };
+  } catch (e) {
+    console.error("Rate limit check failed, allowing message:", e);
+    return { allowed: true };
+  }
+}
 
 interface Message {
   id: number;
@@ -78,11 +135,32 @@ export function AIChatbot() {
 
   useEffect(() => {
     // Initialize the chat session when the component mounts
-    chatRef.current = model.startChat();
+    try {
+      const model = getChatModel();
+      if (model) {
+        chatRef.current = model.startChat();
+      }
+    } catch (e) {
+      console.error("Failed to initialize chat session on mount:", e);
+    }
   }, []);
 
   const sendMessage = async (text: string) => {
     if (!text.trim()) return;
+
+    // Rate limiting check
+    const rateLimit = checkRateLimit();
+    if (!rateLimit.allowed) {
+      const errorText = rateLimit.reason === "minute"
+        ? "⚠️ Rate limit exceeded. You can send up to 5 messages per minute to prevent API abuse. Please wait a moment before sending another message."
+        : "⚠️ Daily message limit reached. To safeguard API quotas, Eco AI Coach is limited to 50 messages per day. Please check back tomorrow!";
+      
+      const userMsg = createMessage("user", text);
+      const botMsg = createMessage("bot", errorText);
+      setMessages((prev) => [...prev, userMsg, botMsg]);
+      setInput("");
+      return;
+    }
 
     const userMsg = createMessage("user", text);
     // eslint-disable-next-line react-hooks/purity
@@ -100,7 +178,18 @@ export function AIChatbot() {
 
     try {
       if (!chatRef.current) {
-        chatRef.current = model.startChat();
+        try {
+          const model = getChatModel();
+          if (model) {
+            chatRef.current = model.startChat();
+          }
+        } catch (e) {
+          console.error("Failed to initialize chat session on message:", e);
+        }
+      }
+
+      if (!chatRef.current) {
+        throw new Error("Chat session is not available (Fallback Mode)");
       }
 
       const result = await chatRef.current.sendMessageStream(text);

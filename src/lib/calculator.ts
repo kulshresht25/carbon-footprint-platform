@@ -62,7 +62,7 @@ export function calculateCarbonFootprint(data: CalculatorData): CarbonResult {
   if (data.recyclesRegularly) wasteEmissions -= 5;
   if (data.composts) wasteEmissions -= 3;
   const plasticPenalty: Record<string, number> = { low: 0, medium: 3, high: 8 };
-  wasteEmissions += plasticPenalty[data.plasticUsage] || 3;
+  wasteEmissions += plasticPenalty[data.plasticUsage] ?? 3;
 
   const totalMonthly =
     transportEmissions + energyEmissions + foodEmissions + shoppingEmissions + wasteEmissions;

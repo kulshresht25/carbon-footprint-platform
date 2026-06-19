@@ -113,6 +113,31 @@ npx firebase-tools deploy --only hosting
 
 ---
 
+## 🗳️ Challenge Submission Details
+
+### Chosen Vertical
+- **Gamified Sustainability & Carbon Footprint Tracking (EcoTrack)**: Designed to help users track, understand, and gamify their daily climate actions and lifestyle choices.
+
+### Approach & Logic
+- **Friction-Free Guest Access**: Eliminates the signup/login barrier. Session state is auto-initiated on first visit and persists in `localStorage` under `ecotrack_session`.
+- **Client-Side-Only Architecture**: Designed to be compiled as a static HTML/JS export (via Next.js `output: "export"`) deployable on static hosting (like Firebase Hosting), with no database reads/writes for maximum cost efficiency and speed.
+- **Streaming AI Integration**: Connects directly to the Gemini API (`gemini-2.5-flash-lite`) via `firebase/ai` client-side, using a stream reader to render responses chunk-by-chunk for a premium, snappy chat feel. Includes client-side rate-limiting and keyword-based fallback replies to protect API quotas.
+- **Robust Automated Testing**: Hardened via a dual testing pipeline:
+  - **Vitest & React Testing Library**: 29 unit and component tests covering calculations, level boundary thresholds, streak updates, context persistence, corrupted data fallback, calculator wizard page forms, and mocked Gemini/Firestore chatbot interfaces.
+  - **Playwright**: E2E tests validating the full calculator flow, saving results, dashboard KPI updates, and checklist habit completion.
+
+### How the Solution Works
+1. **Calculator Flow**: The user enters data across 5 categories (Transportation, Energy, Food, Shopping, and Waste). The inputs are mapped against real-world emission coefficients to produce an emissions breakdown, equivalence cards, and a clamped 0-100 Sustainability Score.
+2. **Dashboard & Habit Tracking**: The dashboard tracks lifetime CO₂ saved, daily streaks, levels (`Seed` ➔ `Green Warrior` ➔ `Earth Guardian` ➔ `Climate Hero`), and active challenges. Logging habits dynamically recalculates points earned today.
+3. **AI Chatbot**: The floating coach bubble allows users to query lifestyle tips in real-time, pulling directly from Gemini or fallback mock responses if offline or missing API configurations.
+
+### Assumptions Made
+- **Single-User Session**: Assumes one visitor profile per browser instance using `localStorage`.
+- **Emission Factors**: Carbon calculation uses fixed standard grid factors (e.g. `0.82 kg CO2/kWh` for grid electricity, `0.21 kg/km` for cars, etc.).
+- **Guest Points Allocation**: Calculates points progression locally; completing calculations awards `+50` points and toggling habits updates daily progress on the Dashboard.
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.

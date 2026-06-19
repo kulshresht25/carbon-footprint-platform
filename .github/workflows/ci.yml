@@ -26,5 +26,8 @@ jobs:
     - name: Run linter
       run: npm run lint
 
+    - name: Run unit and component tests
+      run: npm test
+
     - name: Build project
       run: npm run build

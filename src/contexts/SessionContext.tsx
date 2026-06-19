@@ -64,7 +64,7 @@ const STORAGE_KEY = "ecotrack_session";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-function calculateLevel(ecoPoints: number): { level: string; levelIcon: string } {
+export function calculateLevel(ecoPoints: number): { level: string; levelIcon: string } {
   if (ecoPoints >= 15000) return { level: "Climate Hero", levelIcon: "🏆" };
   if (ecoPoints >= 5000) return { level: "Earth Guardian", levelIcon: "🌳" };
   if (ecoPoints >= 1000) return { level: "Green Warrior", levelIcon: "🌿" };
@@ -94,7 +94,7 @@ function saveSession(profile: SessionProfile) {
 
 // ─── Streak Helper ─────────────────────────────────────────────────────────────
 
-function updateStreakAndLastActive(prevProfile: SessionProfile): Partial<SessionProfile> {
+export function updateStreakAndLastActive(prevProfile: SessionProfile): Partial<SessionProfile> {
   const now = new Date();
   const todayStr = now.toISOString();
   

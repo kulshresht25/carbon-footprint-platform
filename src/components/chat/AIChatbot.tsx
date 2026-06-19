@@ -65,6 +65,7 @@ export function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [hasUnread, setHasUnread] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chatRef = useRef<any>(null);
@@ -133,7 +134,10 @@ export function AIChatbot() {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setOpen(!open);
+          setHasUnread(false);
+        }}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-2xl shadow-green-500/40 hover:shadow-green-500/60 transition-shadow"
       >
         <AnimatePresence mode="wait">
@@ -148,7 +152,7 @@ export function AIChatbot() {
           )}
         </AnimatePresence>
 
-        {!open && (
+        {!open && hasUnread && (
           <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">1</span>
         )}
       </motion.button>

@@ -114,7 +114,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #475569;
+  color: #8a99ad;
   margin-bottom: var(--space-2);
 }
 
@@ -145,18 +145,18 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #475569;
+  color: #8a99ad;
 }
 .text-body-custom {
   font-size: var(--text-sm);
   line-height: 1.65;
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 .text-caption-custom {
   font-size: var(--text-xs);
   line-height: 1.5;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
 }
 .gradient-text {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 60%, #34d399 100%);
@@ -269,7 +269,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #475569;
+  color: #8a99ad;
 }
 
 /* â”€â”€ KPI Card (larger dashboard cards) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -313,7 +313,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #475569;
+  color: #8a99ad;
 }
 
 /* â”€â”€ Chart Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

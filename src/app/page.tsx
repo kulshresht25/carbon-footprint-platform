@@ -56,10 +56,10 @@ export default function LandingPage() {
 
       {/* ────────────────── Hero ────────────────── */}
       <section
+        className="px-4 sm:px-6 py-12 md:py-20 lg:py-24"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          padding: "6rem var(--space-6) var(--space-20)",
         }}
       >
         {/* Two-column layout on desktop: copy left, visual right */}
@@ -95,15 +95,20 @@ export default function LandingPage() {
             </div>
 
             {/* Social proof stats with top border/divider */}
-            <div className="w-full pt-8 border-t border-white/[0.06]">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Global Community Impact</div>
-              <div className="grid grid-cols-3 gap-6 max-w-md">
-                {stats.map(({ value, label }) => (
-                  <div key={label} className="flex flex-col">
-                    <span className="text-white font-black text-xl leading-none tracking-tight">{value}</span>
-                    <span className="text-slate-500 text-[0.6875rem] font-bold uppercase tracking-wider mt-2 leading-none">{label}</span>
-                  </div>
-                ))}
+            <div className="w-full pt-8 border-t border-white/[0.06] mt-4">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">Global Community Impact</div>
+              <div
+                className="card card-md max-w-md"
+                style={{ borderColor: "rgba(255, 255, 255, 0.05)", background: "rgba(10, 18, 10, 0.25)" }}
+              >
+                <div className="grid grid-cols-3 gap-4">
+                  {stats.map(({ value, label }) => (
+                    <div key={label} className="flex flex-col">
+                      <span className="text-white font-black text-xl leading-none tracking-tight">{value}</span>
+                      <span className="text-slate-500 text-[0.6875rem] font-bold uppercase tracking-wider mt-2 leading-none">{label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -165,11 +170,10 @@ export default function LandingPage() {
 
       {/* ── Horizontal Divider ── */}
       <div
+        className="px-4 sm:px-6"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          paddingLeft: "var(--space-6)",
-          paddingRight: "var(--space-6)",
         }}
       >
         <div className="divider" />
@@ -177,10 +181,10 @@ export default function LandingPage() {
 
       {/* ────────────────── How It Works ────────────────── */}
       <section
+        className="px-4 sm:px-6 py-12 md:py-20"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          padding: "var(--space-20) var(--space-6)",
         }}
       >
         <div className="text-center mb-14">
@@ -213,11 +217,10 @@ export default function LandingPage() {
 
       {/* ── Divider ── */}
       <div
+        className="px-4 sm:px-6"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          paddingLeft: "var(--space-6)",
-          paddingRight: "var(--space-6)",
         }}
       >
         <div className="divider" />
@@ -225,10 +228,10 @@ export default function LandingPage() {
 
       {/* ────────────────── Features ────────────────── */}
       <section
+        className="px-4 sm:px-6 py-12 md:py-20"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          padding: "var(--space-20) var(--space-6)",
         }}
       >
         <div className="text-center mb-14">
@@ -259,11 +262,10 @@ export default function LandingPage() {
 
       {/* ── Divider ── */}
       <div
+        className="px-4 sm:px-6"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          paddingLeft: "var(--space-6)",
-          paddingRight: "var(--space-6)",
         }}
       >
         <div className="divider" />
@@ -271,10 +273,10 @@ export default function LandingPage() {
 
       {/* ────────────────── CTA Banner ────────────────── */}
       <section
+        className="px-4 sm:px-6 py-12 md:py-20"
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
-          padding: "var(--space-20) var(--space-6)",
         }}
       >
         <div

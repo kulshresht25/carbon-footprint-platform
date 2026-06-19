@@ -120,27 +120,26 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Full Leaderboard Table */}
-        <div className="chart-card" style={{ padding: 0, overflow: "hidden" }}>
-
-          {/* Table header */}
-          <div
-            className="grid items-center border-b border-white/[0.045]"
-            style={{ gridTemplateColumns: "3rem 1fr 5rem 7rem 5.5rem", padding: "var(--space-4) var(--space-6)" }}
-          >
-            <div className="text-label">Rank</div>
-            <div className="text-label">Member</div>
-            <div className="text-label text-right hidden sm:block">Score</div>
-            <div className="text-label text-right hidden sm:block">CO2 Saved</div>
-            <div className="text-label text-right">Points</div>
-          </div>
-
-          {/* Rows */}
-          <div>
+        <table className="chart-card w-full border-collapse" style={{ padding: 0, overflow: "hidden" }}>
+          <caption className="sr-only">Community Eco Champions Leaderboard</caption>
+          <thead>
+            <tr
+              className="grid items-center border-b border-white/[0.045]"
+              style={{ gridTemplateColumns: "3rem 1fr 5rem 7rem 5.5rem", padding: "var(--space-4) var(--space-6)" }}
+            >
+              <th scope="col" className="text-label text-left font-normal">Rank</th>
+              <th scope="col" className="text-label text-left font-normal">Member</th>
+              <th scope="col" className="text-label text-right hidden sm:block font-normal">Score</th>
+              <th scope="col" className="text-label text-right hidden sm:block font-normal">CO2 Saved</th>
+              <th scope="col" className="text-label text-right font-normal">Points</th>
+            </tr>
+          </thead>
+          <tbody>
             {rankedLeaderboard.map((entry, i) => {
               const { rank, name, avatar, score, saved, points, isMe } = entry;
               const isTop3 = rank <= 3;
               return (
-                <motion.div
+                <motion.tr
                   key={rank}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -155,7 +154,7 @@ export default function LeaderboardPage() {
                     boxShadow: isMe ? "inset 0 0 0 1px rgba(34,197,94,0.16)" : undefined,
                   }}
                 >
-                  <div>
+                  <td className="text-left">
                     {isTop3 ? (
                       <span className="text-xl leading-none">
                         {rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉"}
@@ -165,9 +164,9 @@ export default function LeaderboardPage() {
                         #{rank}
                       </span>
                     )}
-                  </div>
+                  </td>
 
-                  <div className="flex items-center gap-3 min-w-0">
+                  <td className="flex items-center gap-3 min-w-0 text-left">
                     <div
                       className={cn(
                         "w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0",
@@ -176,7 +175,7 @@ export default function LeaderboardPage() {
                     >
                       {avatar}
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 text-left">
                       <div className={cn("font-bold text-sm truncate leading-tight", isMe ? "text-green-400" : "text-white")}>
                         {name}{isMe && <span className="text-xs font-normal text-green-500/50 ml-1.5">(You)</span>}
                       </div>
@@ -185,30 +184,30 @@ export default function LeaderboardPage() {
                         <span className="text-[0.65rem] font-semibold text-slate-500 uppercase tracking-wider">Score {score}/100</span>
                       </div>
                     </div>
-                  </div>
+                  </td>
 
-                  <div className="text-right hidden sm:block">
+                  <td className="text-right hidden sm:block">
                     <span className={cn("text-sm font-black tracking-tight tabular-nums", score >= 85 ? "text-green-400" : score >= 70 ? "text-emerald-400" : "text-yellow-400")}>
                       {score}/100
                     </span>
-                  </div>
+                  </td>
 
-                  <div className="text-right hidden sm:block">
+                  <td className="text-right hidden sm:block">
                     <span className="text-teal-400 text-sm font-bold inline-flex items-center justify-end gap-1.5">
                       <TrendingDown className="w-3.5 h-3.5 shrink-0" />
                       {saved.toLocaleString()} kg
                     </span>
-                  </div>
+                  </td>
 
-                  <div className="text-right">
+                  <td className="text-right">
                     <div className="text-white font-black text-sm leading-tight tabular-nums">{points.toLocaleString()}</div>
                     <div className="text-label mt-0.5">pts</div>
-                  </div>
-                </motion.div>
+                  </td>
+                </motion.tr>
               );
             })}
-          </div>
-        </div>
+          </tbody>
+        </table>
 
         {/* CTA */}
         <motion.div

@@ -51,7 +51,7 @@ const ChartTooltip = ({
 };
 
 const legendStyle = {
-  color: "#64748b",
+  color: "#94a3b8",
   fontSize: "11px",
   fontWeight: 700,
   textTransform: "uppercase" as const,
@@ -191,8 +191,8 @@ export default function AnalyticsPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.025)" />
-                  <XAxis dataKey="month" stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
-                  <YAxis                stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
+                  <XAxis dataKey="month" stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
+                  <YAxis                stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
                   <Tooltip content={<ChartTooltip />} />
                   <Legend wrapperStyle={legendStyle} />
                   <Area
@@ -252,8 +252,8 @@ export default function AnalyticsPage() {
                     margin={{ left: -10, right: 8 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.025)" />
-                    <XAxis dataKey="week" stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
-                    <YAxis              stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
+                    <XAxis dataKey="week" stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
+                    <YAxis              stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
                     <Tooltip content={<ChartTooltip />} />
                     <Legend wrapperStyle={legendStyle} />
                     <Bar dataKey="thisMonth" name="This Month" fill="#22c55e" radius={[4, 4, 0, 0]} />
@@ -399,9 +399,10 @@ export default function AnalyticsPage() {
               { title: "⚡ Solar Energy",   desc: "Switch to 100% renewable electricity with green energy providers.",    action: "Get Quote"       },
               { title: "💳 Carbon Credits", desc: "Purchase verified offset certificates from certified projects.",       action: "Explore"         },
             ].map(({ title, desc, action }) => (
-              <div
+              <button
                 key={title}
-                className="p-6 rounded-2xl border border-white/[0.045] bg-slate-950/15 hover:border-green-500/20 hover:bg-slate-900/10 cursor-pointer group transition-all duration-300 flex flex-col justify-between gap-5"
+                type="button"
+                className="p-6 rounded-2xl border border-white/[0.045] bg-slate-950/15 hover:border-green-500/20 hover:bg-slate-900/10 cursor-pointer group transition-all duration-300 flex flex-col justify-between gap-5 text-left w-full outline-none focus-visible:ring-2 focus-visible:ring-green-500/30"
               >
                 <div>
                   <h4 className="text-white font-bold text-sm mb-2">{title}</h4>
@@ -411,7 +412,7 @@ export default function AnalyticsPage() {
                   {action}
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </motion.div>

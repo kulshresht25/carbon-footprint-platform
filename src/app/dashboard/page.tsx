@@ -178,8 +178,8 @@ export default function DashboardPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.025)" />
-                  <XAxis dataKey="day"  stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
-                  <YAxis              stroke="#0f172a" tick={{ fill: "#475569", fontSize: 11, fontWeight: 600 }} />
+                  <XAxis dataKey="day"  stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
+                  <YAxis              stroke="#0f172a" tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 600 }} />
                   <Tooltip content={<ChartTooltip />} />
                   <Area
                     type="monotone" dataKey="emissions" name="Emissions"

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy, Calendar, TrendingDown, CheckCircle2,
-  Share2, Download, History, Edit2, Check, Lock,
+  Share2, Download, History, Edit2, Check, Lock, X,
 } from "lucide-react";
 import Link from "next/link";
 import { mockChallenges } from "@/lib/mockData";
@@ -17,6 +17,16 @@ export default function ProfilePage() {
   const [nameInput, setNameInput] = useState(profile.displayName);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
   const [toastTimeoutId, setToastTimeoutId] = useState<ReturnType<typeof setTimeout> | null>(null);
+
+  const editButtonRef = useRef<HTMLButtonElement>(null);
+  const prevEditingName = useRef(editingName);
+
+  useEffect(() => {
+    if (prevEditingName.current && !editingName) {
+      editButtonRef.current?.focus();
+    }
+    prevEditingName.current = editingName;
+  }, [editingName]);
 
   const showToast = (message: string) => {
     if (toastTimeoutId) {
@@ -120,20 +130,31 @@ Join me in tracking and reducing your carbon footprint!`;
                         className="auth-input text-lg font-bold h-10"
                         style={{ width: "14rem" }}
                         autoFocus
+                        aria-label="New display name"
                       />
                       <button
                         onClick={saveName}
                         className="btn-base btn-icon btn-icon-sm bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/20"
+                        aria-label="Save display name"
                       >
                         <Check className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setEditingName(false)}
+                        className="btn-base btn-icon btn-icon-sm bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20"
+                        aria-label="Cancel editing display name"
+                      >
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
                     <>
                       <h1 className="text-2xl font-extrabold text-white tracking-tight truncate">{displayName}</h1>
                       <button
+                        ref={editButtonRef}
                         onClick={() => { setEditingName(true); setNameInput(displayName); }}
                         className="btn-base btn-ghost btn-icon-sm text-slate-500 hover:text-slate-300"
+                        aria-label="Edit display name"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -375,6 +396,8 @@ Join me in tracking and reducing your carbon footprint!`;
       <AnimatePresence>
         {toast.visible && (
           <motion.div
+            role="status"
+            aria-live="polite"
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}

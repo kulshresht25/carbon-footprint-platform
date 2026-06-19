@@ -291,8 +291,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ────────────────── Footer ────────────────── */}
-      <footer className="border-t border-white/[0.045]">
+      {/* ────────────────── Footer Spacer ────────────────── */}
+      <div className="border-t border-white/[0.045]">
         <div
           className="flex flex-col sm:flex-row items-center justify-between gap-6"
           style={{
@@ -314,7 +314,7 @@ export default function LandingPage() {
             © 2026 EcoTrack — Building a greener future 🌱
           </p>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

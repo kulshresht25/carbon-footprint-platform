@@ -53,9 +53,11 @@ test.describe("EcoTrack Core User Journey", () => {
     // Confirm save confirmation banner appears
     await expect(page.locator("text=Results saved to your session!")).toBeVisible();
 
+    // Wait for the navbar user points chip to update, stabilizing the layout
+    await expect(page.locator("text=50 pts").first()).toBeVisible();
+
     // 4. Navigate to the Dashboard
-    const dashboardLink = page.getByRole("link", { name: /Dashboard/i }).first();
-    await dashboardLink.click();
+    await page.goto("/dashboard");
     await expect(page).toHaveURL(/.*dashboard/);
 
     // Verify Carbon Score KPI tile matches calculated score

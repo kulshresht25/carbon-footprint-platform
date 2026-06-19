@@ -268,8 +268,8 @@ export default function CalculatorPage() {
                 {/* ── Step 1: Transport ── */}
                 {step === 0 && (
                   <div className="flex flex-col gap-8">
-                    <div>
-                      <div className="text-label mb-4">Primary transport mode</div>
+                    <fieldset className="border-0 p-0 m-0 w-full">
+                      <legend className="text-label mb-4">Primary transport mode</legend>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" role="radiogroup" aria-label="Transport option">
                         {TRANSPORT_OPTIONS.map(({ value, label, icon: Icon, co2, co2Class }) => (
                           <button
@@ -298,15 +298,16 @@ export default function CalculatorPage() {
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </fieldset>
 
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <div className="text-label">Weekly distance</div>
+                        <label htmlFor="weekly-distance" className="text-label">Weekly distance</label>
                         <span className="text-green-400 font-black text-sm">{data.weeklyDistance} km</span>
                       </div>
                       <div className="slider-container">
                         <input
+                          id="weekly-distance"
                           type="range" min={0} max={500} step={5}
                           value={data.weeklyDistance}
                           onChange={(e) => setData((d) => ({ ...d, weeklyDistance: +e.target.value }))}
@@ -326,11 +327,12 @@ export default function CalculatorPage() {
                   <div className="flex flex-col gap-6">
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <div className="text-label">Monthly electricity (kWh)</div>
+                        <label htmlFor="monthly-electricity" className="text-label">Monthly electricity (kWh)</label>
                         <span className="text-green-400 font-black text-sm">{data.monthlyElectricity} kWh</span>
                       </div>
                       <div className="slider-container">
                         <input
+                          id="monthly-electricity"
                           type="range" min={0} max={1000} step={10}
                           value={data.monthlyElectricity}
                           onChange={(e) => setData((d) => ({ ...d, monthlyElectricity: +e.target.value }))}
@@ -460,8 +462,8 @@ export default function CalculatorPage() {
                       ))}
                     </div>
 
-                    <div>
-                      <div className="text-label mb-4">Single-use plastic usage</div>
+                    <fieldset className="border-0 p-0 m-0 w-full">
+                      <legend className="text-label mb-4">Single-use plastic usage</legend>
                       <div className="flex gap-3" role="radiogroup" aria-label="Single-use plastic usage">
                         {(["low", "medium", "high"] as const).map((v) => (
                           <button
@@ -480,7 +482,7 @@ export default function CalculatorPage() {
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </fieldset>
                   </div>
                 )}
 

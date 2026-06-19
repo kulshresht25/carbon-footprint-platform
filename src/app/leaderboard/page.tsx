@@ -53,13 +53,13 @@ export default function LeaderboardPage() {
         <div className="page-header text-center flex flex-col items-center">
           <div className="badge badge-yellow mb-4">
             <Trophy className="w-3.5 h-3.5" />
-            Global Leaderboard
+            Simulated Demo Leaderboard
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight mb-3">
             Eco <span className="gradient-text">Champions</span>
           </h1>
           <p className="text-body-custom max-w-md">
-            Ranked by lifetime Eco Points. Complete daily habits and challenges to rise higher.
+            This is a simulated demo leaderboard showing how you rank against the EcoTrack community. All ranks are computed locally on your device.
           </p>
         </div>
 

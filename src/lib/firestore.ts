@@ -12,6 +12,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { calculateLevel } from "./utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -111,11 +112,4 @@ export async function getLatestFootprint(uid: string): Promise<FootprintEntry | 
   return entries[0] ?? null;
 }
 
-// ─── Level Calculation ────────────────────────────────────────────────────────
-
-export function calculateLevel(ecoPoints: number): { level: string; levelIcon: string } {
-  if (ecoPoints >= 15000) return { level: "Climate Hero", levelIcon: "🏆" };
-  if (ecoPoints >= 5000) return { level: "Earth Guardian", levelIcon: "🌳" };
-  if (ecoPoints >= 1000) return { level: "Green Warrior", levelIcon: "🌿" };
-  return { level: "Seed", levelIcon: "🌱" };
-}
+// Level calculation is imported from ./utils

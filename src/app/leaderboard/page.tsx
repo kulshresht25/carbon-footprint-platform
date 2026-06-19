@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Leaf, TrendingDown } from "lucide-react";
 import { mockLeaderboard } from "@/lib/mockData";
-import { cn } from "@/lib/utils";
+import { cn, getRankedLeaderboard } from "@/lib/utils";
 
 import { useSession } from "@/contexts/SessionContext";
 
@@ -16,32 +16,14 @@ const rankColors: Record<number, string> = {
 export default function LeaderboardPage() {
   const { profile } = useSession();
 
-  // Create dynamic leaderboard entry for current user
-  const userEntry = {
-    name: profile.displayName || "You",
-    avatar: profile.displayName 
-      ? profile.displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() 
-      : "ME",
-    score: profile.carbonScore,
-    saved: profile.totalSaved,
-    points: profile.ecoPoints,
-    isMe: true
-  };
-
-  // Combine mock users (excluding the dummy rank 4 placeholder) with current user
-  const leaderboardEntries = [
-    ...mockLeaderboard.filter(u => u.rank !== 4).map(u => ({ ...u, isMe: false })),
-    userEntry
-  ];
-
-  // Sort descending by points
-  leaderboardEntries.sort((a, b) => b.points - a.points);
-
-  // Assign ranks dynamically
-  const rankedLeaderboard = leaderboardEntries.map((entry, index) => ({
-    ...entry,
-    rank: index + 1
-  }));
+  // Compute leaderboard and user percentile rank using the shared utility helper
+  const { ranked: rankedLeaderboard } = getRankedLeaderboard(
+    profile.displayName,
+    profile.carbonScore,
+    profile.totalSaved,
+    profile.ecoPoints,
+    mockLeaderboard
+  );
 
   const top3 = rankedLeaderboard.slice(0, 3);
 

@@ -64,12 +64,8 @@ const STORAGE_KEY = "ecotrack_session";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-export function calculateLevel(ecoPoints: number): { level: string; levelIcon: string } {
-  if (ecoPoints >= 15000) return { level: "Climate Hero", levelIcon: "🏆" };
-  if (ecoPoints >= 5000) return { level: "Earth Guardian", levelIcon: "🌳" };
-  if (ecoPoints >= 1000) return { level: "Green Warrior", levelIcon: "🌿" };
-  return { level: "Seed", levelIcon: "🌱" };
-}
+import { calculateLevel } from "@/lib/utils";
+export { calculateLevel };
 
 function loadSession(): SessionProfile {
   if (typeof window === "undefined") return defaultProfile;

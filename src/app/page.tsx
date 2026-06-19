@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useSession } from "@/contexts/SessionContext";
 import { mockLeaderboard } from "@/lib/mockData";
+import { getRankedLeaderboard } from "@/lib/utils";
 
 
 const features = [
@@ -34,23 +35,14 @@ export default function LandingPage() {
   const { profile } = useSession();
   const { displayName, ecoPoints, carbonScore, totalSaved, level, levelIcon } = profile;
 
-  // Calculate dynamic rank for user mockup display
-  const userEntry = {
-    name: displayName || "You",
-    avatar: displayName ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "ME",
-    score: carbonScore,
-    saved: totalSaved,
-    points: ecoPoints,
-    isMe: true
-  };
-  const leaderboardEntries = [
-    ...mockLeaderboard.filter(u => u.rank !== 4).map(u => ({ ...u, isMe: false })),
-    userEntry
-  ];
-  leaderboardEntries.sort((a, b) => b.points - a.points);
-  const myRank = leaderboardEntries.findIndex(u => u.isMe) + 1;
-  const totalCompetitors = leaderboardEntries.length;
-  const rankPercentile = Math.max(1, Math.round((myRank / totalCompetitors) * 100));
+  // Compute leaderboard and user percentile rank using the shared utility helper
+  const { myRank, rankPercentile } = getRankedLeaderboard(
+    displayName,
+    carbonScore,
+    totalSaved,
+    ecoPoints,
+    mockLeaderboard
+  );
   return (
     <div className="min-h-screen app-bg">
 

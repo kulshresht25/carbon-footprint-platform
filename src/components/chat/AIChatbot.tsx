@@ -7,11 +7,13 @@ import { mockChatResponses } from "@/lib/mockData";
 import app from "@/lib/firebase";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
 
+type AIInstance = ReturnType<typeof getAI>;
+type ModelInstance = ReturnType<typeof getGenerativeModel>;
+type ChatSessionInstance = ReturnType<ModelInstance["startChat"]>;
+
 // Safe lazy getter to prevent crashing if Firebase credentials are not set up or initialization fails
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let aiInstance: any = null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let modelInstance: any = null;
+let aiInstance: AIInstance | null = null;
+let modelInstance: ModelInstance | null = null;
 
 function getChatModel() {
   if (modelInstance) return modelInstance;
@@ -124,8 +126,7 @@ export function AIChatbot() {
   const [typing, setTyping] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chatRef = useRef<any>(null);
+  const chatRef = useRef<ChatSessionInstance | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {

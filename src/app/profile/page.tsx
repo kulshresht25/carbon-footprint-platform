@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { mockChallenges } from "@/lib/mockData";
-import { cn, getScoreBg, getScoreColor, getScoreLabel } from "@/lib/utils";
+import { cn, getScoreBg, getScoreColor, getScoreLabel, LEVEL_THRESHOLDS } from "@/lib/utils";
 import { useSession } from "@/contexts/SessionContext";
 
 export default function ProfilePage() {
@@ -67,7 +67,7 @@ Join me in tracking and reducing your carbon footprint!`;
   } = profile;
 
   const joinDate = new Date(joinedAt);
-  const nextLevelPoints = 5000;
+  const nextLevelPoints = LEVEL_THRESHOLDS.GUARDIAN;
   const progressPct = Math.min(Math.round((ecoPoints / nextLevelPoints) * 100), 100);
 
   const achievements = [
